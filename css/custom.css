@@ -1,0 +1,39 @@
+/*!
+ * Bootstrap v2.1.0
+ *
+ * Copyright 2012 Twitter, Inc
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Designed and built with all the love in the world @twitter by @mdo and @fat.
+ */
+
+canvas {
+  border: 1px solid #000;
+}
+
+div#dotcanvas_container {
+  position: absolute;
+  left: 96px;
+  top: 64px;
+}
+
+canvas#gridcanvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
+
+canvas#dotcanvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
+
+div#previewcanvas_container {
+  position: absolute;
+  right: 96px;
+  top: 64px;
+}
