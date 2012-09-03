@@ -6,7 +6,39 @@ var _is_drawing = false;
 window.onload = function() {
   setupGrid();
   
+  setupPalette();
+
   setupPaintEvent();
+}
+
+var setupPalette = function() {
+  addPalette(0, 0, 0).addClass("selected");
+  addPalette(255, 255, 255);
+  for (var r = 15 ; r <= 256 ; r += 16) {
+    addPalette(r, 0, 0);
+  }
+  for (var r = 15 ; r <= 256 ; r += 16) {
+    addPalette(0, r, 0);
+  }
+  for (var r = 15 ; r <= 256 ; r += 16) {
+    addPalette(0, 0, r);
+  }
+}
+
+var addPalette = function(r, g, b) {
+  var palette = $("<div/>").addClass("colorbox").css("background-color", rgb(r, g, b));
+  $("#palette_container").append(palette);
+  palette.click(function(){
+    $(".colorbox").removeClass("selected");
+    $(this).addClass("selected");
+    $("#current_color").css("background-color", $(".colorbox.selected").css("background-color"))
+  });
+  
+  return palette;
+}
+
+var rgb = function(r, g, b) {
+  return "rgb(_r, _g, _b)".replace("_r", r).replace("_g", g).replace("_b", b);
 }
 
 var setupGrid = function() {
@@ -56,9 +88,11 @@ var setupPaintEvent = function() {
 }
 
 var dot = function(x, y) {
+  var currentColor = $(".colorbox.selected").css("background-color");
+  console.log(currentColor);
   var dotCanvas = $('#dotcanvas')[0];
   var ctx = dotCanvas.getContext('2d');
   ctx.beginPath();
-  ctx.fillStyle = 'rgb(0, 0, 0)';
+  ctx.fillStyle = currentColor;
   ctx.fillRect(x * DOT_SIZE, y * DOT_SIZE, DOT_SIZE, DOT_SIZE);
 }

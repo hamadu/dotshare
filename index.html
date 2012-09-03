@@ -24,25 +24,30 @@
       </div>
     </div>
 
-    <div class="container">        
-      <div id="screen_container">
+    <div id="screen_container" class="row">
+      <div class="span6">       
         <div id="dotcanvas_container">
           <canvas id="dotcanvas" width="512" height="512">
           </canvas>
           <canvas id="gridcanvas" width="512" height="512">
           </canvas>
         </div>
-
+      </div>
+      <div class="offset8 span6">
         <div id="previewcanvas_container">
           <canvas id="previewcanvas" width="64" height="64">
           </canvas>
         </div>
        
         <div id="palette_container">
-          <h3></h3>
+        </div>
+        <div id="picker_container">
+          <div id="current_color"></div>
         </div>
       </div>
     </div>
+    
+    
     <script src="js/jquery-1.8.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/painter.js"></script>

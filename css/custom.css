@@ -12,10 +12,14 @@ canvas {
   border: 1px solid #000;
 }
 
+
+div#screen_container {
+  margin-top: 64px;
+}
+
 div#dotcanvas_container {
   position: absolute;
-  left: 96px;
-  top: 64px;
+  left: 48px;
 }
 
 canvas#gridcanvas {
@@ -24,16 +28,35 @@ canvas#gridcanvas {
   top: 0px;
 }
 
-
 canvas#dotcanvas {
-  position: absolute;
-  left: 0px;
-  top: 0px;
+}
+
+div#previewcanvas_container {
 }
 
 
-div#previewcanvas_container {
-  position: absolute;
-  right: 96px;
-  top: 64px;
+div#palette_container {
+}
+
+div#picker_container {
+  clear: both;
+}
+
+div.colorbox {
+  float: left;
+  width: 16px;
+  height: 16px;
+  margin: 4px;
+  border: 2px solid #000;
+}
+
+div.colorbox.selected {
+  border: 2px dashed #000;
+}
+
+div#current_color {
+  width: 16px;
+  height: 16px;
+  margin: 4px;
+  border: 2px solid #000;
 }
