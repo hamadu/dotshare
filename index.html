@@ -25,12 +25,12 @@
       </div>
     </div>
 
-    <div id="screen_container" class="row-fluid">
-      <div class="offset1 span5">
+    <div id="screen_container" class="row">
+      <div class="offset2 span7">
         <div id="dotcanvas_container">
-          <canvas id="dotcanvas" width="512" height="512">
-          </canvas>
           <canvas id="gridcanvas" width="512" height="512">
+          </canvas>
+          <canvas id="dotcanvas" width="512" height="512">
           </canvas>
         </div>
         <div id="zoom_container">
@@ -40,7 +40,6 @@
         </div>
       </div>
       <div class="span5">
-        
         <div id="previewcanvas_container">
           <canvas id="previewcanvas" width="128" height="128">
           </canvas>
@@ -72,7 +71,7 @@
     <script src="js/bootstrap-colorpicker.js"></script>
     <script src="js/painter.js"></script>
     <script>
-      document.getElementById('files').addEventListener('change', loadDot, false);
+      
     </script>
 	</body>
 </html>

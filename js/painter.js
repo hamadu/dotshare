@@ -84,19 +84,23 @@ var setupGrid = function(scaling) {
   }
 } 
 
+var getClickPosition = function(e) {
+  var offsetX = e.pageX - 160;
+  var offsetY = e.pageY - 64;
+  return [Math.floor(offsetX / _scaling), Math.floor(offsetY / _scaling)];
+}
+
 var setupPaintEvent = function() {
   $('#gridcanvas').mousedown(function(e) {
-    var px = Math.floor(e.offsetX / _scaling);
-    var py = Math.floor(e.offsetY / _scaling);
-    dotCurrentColor(px, py);
+    var position = getClickPosition(e);
+    dotCurrentColor(position[0], position[1]);
     _is_drawing = true;
   });
 
   $('#gridcanvas').mousemove(function(e) {
     if (_is_drawing) {
-      var px = Math.floor(e.offsetX / _scaling);
-      var py = Math.floor(e.offsetY / _scaling);
-      dotCurrentColor(px, py);
+      var position = getClickPosition(e);
+      dotCurrentColor(position[0], position[1]);
     }
   });
 
