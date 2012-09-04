@@ -1,10 +1,9 @@
 var CANVAS_SIZE = 512;
-var DOT_SIZE = 32;
-
+var _scaling = 32;
 var _is_drawing = false;
 
 window.onload = function() {
-  setupGrid();
+  setupScale(8);
   
   setupPalette();
 
@@ -53,21 +52,26 @@ var rgb = function(r, g, b) {
   return "rgb(_r, _g, _b)".replace("_r", r).replace("_g", g).replace("_b", b);
 }
 
-var setupGrid = function() {
+var setupGrid = function(scaling) {
+  var dotSize = scaling;
+  
   var gridCanvas = $('#gridcanvas')[0];
   var ctx = gridCanvas.getContext('2d');
+  
+  ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  
   ctx.strokeStyle = 'rgba(127, 127, 127, 0.5)';
-  for (var y = 0 ; y < CANVAS_SIZE / DOT_SIZE ; y++) {
-    for (var x = 0 ; x < CANVAS_SIZE / DOT_SIZE ; x++) {
+  for (var y = 0 ; y < CANVAS_SIZE / dotSize ; y++) {
+    for (var x = 0 ; x < CANVAS_SIZE / dotSize ; x++) {
       ctx.beginPath();
       
       // holizonal
-      ctx.moveTo(x * DOT_SIZE, y * DOT_SIZE);
-      ctx.lineTo(x * DOT_SIZE + (DOT_SIZE - 1), y * DOT_SIZE);
+      ctx.moveTo(x * dotSize, y * dotSize);
+      ctx.lineTo(x * dotSize + (dotSize - 1), y * dotSize);
       
       // vertical
-      ctx.moveTo(x * DOT_SIZE, y * DOT_SIZE);
-      ctx.lineTo(x * DOT_SIZE, y * DOT_SIZE + (DOT_SIZE - 1));
+      ctx.moveTo(x * dotSize, y * dotSize);
+      ctx.lineTo(x * dotSize, y * dotSize + (dotSize - 1));
       
       ctx.stroke();
     }
@@ -76,17 +80,17 @@ var setupGrid = function() {
 
 var setupPaintEvent = function() {
   $('#gridcanvas').mousedown(function(e) {
-    var px = Math.floor(e.offsetX / DOT_SIZE);
-    var py = Math.floor(e.offsetY / DOT_SIZE);
-    dot(px, py);
+    var px = Math.floor(e.offsetX / _scaling);
+    var py = Math.floor(e.offsetY / _scaling);
+    dotCurrentColor(px, py);
     _is_drawing = true;
   });
 
   $('#gridcanvas').mousemove(function(e) {
     if (_is_drawing) {
-      var px = Math.floor(e.offsetX / DOT_SIZE);
-      var py = Math.floor(e.offsetY / DOT_SIZE);
-      dot(px, py);
+      var px = Math.floor(e.offsetX / _scaling);
+      var py = Math.floor(e.offsetY / _scaling);
+      dotCurrentColor(px, py);
     }
   });
 
@@ -99,19 +103,23 @@ var setupPaintEvent = function() {
   });
 }
 
-var dot = function(x, y) {
-  var currentColor = $(".colorbox.selected").css("background-color");
+var dot = function(x, y, color) {
   var dotCanvas = $('#dotcanvas')[0];
   var ctx = dotCanvas.getContext('2d');
   ctx.beginPath();
-  ctx.fillStyle = currentColor;
-  ctx.fillRect(x * DOT_SIZE, y * DOT_SIZE, DOT_SIZE, DOT_SIZE);
+  ctx.fillStyle = color;
+  ctx.fillRect(x * _scaling, y * _scaling, _scaling, _scaling);
   
   var previewCanvas = $('#previewcanvas')[0];
   ctx = previewCanvas.getContext('2d');
   ctx.beginPath();
-  ctx.fillStyle = currentColor;
+  ctx.fillStyle = color;
   ctx.fillRect(x, y, 1, 1);
+}
+
+var dotCurrentColor = function(x, y) {
+  var currentColor = $(".colorbox.selected").css("background-color");
+  dot(x, y, currentColor);
 }
 
 var setupPicker = function() {
@@ -132,4 +140,44 @@ var updatePicker = function(rgb) {
 
 var updateColor = function(r, g, b) {
   $(".colorbox.selected").css("background-color", rgb(r, g, b));
+}
+
+var setupScale = function(scaling) {
+  if (scaling <= 2 || scaling >= 64) {
+    return;
+  }
+  
+  $("#zoom_rate").html(scaling);
+  _scaling = scaling;
+  setupGrid(scaling);
+  
+  var previewCanvas = $("#previewcanvas")[0];
+  var previewCtx = previewCanvas.getContext('2d');
+
+  var dotCanvas = $('#dotcanvas')[0];
+  var dotCtx = dotCanvas.getContext('2d');
+  
+  dotCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+  var dataArray = previewCtx.getImageData(0, 0, CANVAS_SIZE / scaling, CANVAS_SIZE / scaling).data;
+  var lengthPerLine = CANVAS_SIZE / scaling;
+  for (var i = 0 ; i < lengthPerLine ; i++) {
+      for (var j = 0 ; j < lengthPerLine ; j++) {
+        var r = dataArray[(i*lengthPerLine*4)+j*4];
+        var g = dataArray[(i*lengthPerLine*4)+j*4+1];
+        var b = dataArray[(i*lengthPerLine*4)+j*4+2];
+        var a = dataArray[(i*lengthPerLine*4)+j*4+3];
+        if (a > 0) {
+          dot(j, i, rgb(r,g,b));
+        }
+      }
+  }
+}
+
+var scaleUp = function() {
+  setupScale(_scaling * 2);
+}
+
+var scaleDown = function() {
+  setupScale(_scaling / 2);
 }
