@@ -41,11 +41,25 @@ div#zoom_container {
   text-align: right;
 }
 
+div#previewcanvas_container {
+  position: relative;
+  height: 128px;
+}
+
 canvas#previewcanvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
   border: 1px dashed #000;
 }
 
-div#previewcanvas_container {
+div#cliprect {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  border: 1px solid #f00;
+  width: 32px;
+  height: 32px;
 }
 
 div#saveload_container {

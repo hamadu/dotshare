@@ -2,6 +2,8 @@ var CANVAS_SIZE = 512;
 var PREVIEW_SIZE = 128;
 var _scaling = 32;
 var _is_drawing = false;
+var _offset_x = 0;
+var _offset_y = 0;
 
 window.onload = function() {
   setupScale(8);
@@ -113,7 +115,7 @@ var setupPaintEvent = function() {
   });
 }
 
-var dot = function(x, y, color) {
+var dot = function(x, y, offsetx, offsety, color) {
   var dotCanvas = $('#dotcanvas')[0];
   var ctx = dotCanvas.getContext('2d');
   ctx.beginPath();
@@ -124,12 +126,12 @@ var dot = function(x, y, color) {
   ctx = previewCanvas.getContext('2d');
   ctx.beginPath();
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, 1, 1);
+  ctx.fillRect(offsetx+x, offsety+y, 1, 1);
 }
 
 var dotCurrentColor = function(x, y) {
   var currentColor = $(".colorbox.selected").css("background-color");
-  dot(x, y, currentColor);
+  dot(x, y, _offset_x, _offset_y, currentColor);
 }
 
 var setupPicker = function() {
@@ -161,26 +163,30 @@ var setupScale = function(scaling) {
   _scaling = scaling;
   setupGrid(scaling);
   
+  clip(0, 0, scaling);
+  setupCliprect(scaling);
+}
+
+var clip = function(fx, fy, scaling) {
   var previewCanvas = $("#previewcanvas")[0];
   var previewCtx = previewCanvas.getContext('2d');
 
   var dotCanvas = $('#dotcanvas')[0];
   var dotCtx = dotCanvas.getContext('2d');
-  
-  dotCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-  var dataArray = previewCtx.getImageData(0, 0, CANVAS_SIZE / scaling, CANVAS_SIZE / scaling).data;
-  var lengthPerLine = CANVAS_SIZE / scaling;
+  dotCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  var lengthPerLine = Math.floor(CANVAS_SIZE / scaling);
+  var dataArray = previewCtx.getImageData(fx, fy, lengthPerLine, lengthPerLine).data;
   for (var i = 0 ; i < lengthPerLine ; i++) {
-      for (var j = 0 ; j < lengthPerLine ; j++) {
-        var r = dataArray[(i*lengthPerLine*4)+j*4];
-        var g = dataArray[(i*lengthPerLine*4)+j*4+1];
-        var b = dataArray[(i*lengthPerLine*4)+j*4+2];
-        var a = dataArray[(i*lengthPerLine*4)+j*4+3];
-        if (a > 0) {
-          dot(j, i, rgb(r,g,b));
-        }
+    for (var j = 0 ; j < lengthPerLine ; j++) {
+      var r = dataArray[(i*lengthPerLine*4)+j*4];
+      var g = dataArray[(i*lengthPerLine*4)+j*4+1];
+      var b = dataArray[(i*lengthPerLine*4)+j*4+2];
+      var a = dataArray[(i*lengthPerLine*4)+j*4+3];
+      if (a > 0) {
+        dot(j, i, fx, fy, rgb(r,g,b));
       }
+    }
   }
 }
 
@@ -220,4 +226,22 @@ var loadDot = function(e) {
     };
     reader.readAsDataURL(files[0]);
   }
+}
+
+var stripPx = function(xpx) {
+  return xpx.substr(0, xpx.length-2);
+}
+
+var setupCliprect = function(scaling) {
+  $("#cliprect").css("width", CANVAS_SIZE / scaling).css("height", CANVAS_SIZE / scaling);
+  $("#cliprect").draggable({
+    containment: "#previewcanvas",
+    drag: function(e) {
+      var leftpx = $("#cliprect").css("left");
+      var toppx = $("#cliprect").css("top");
+      _offset_x = stripPx(leftpx)-1;
+      _offset_y = stripPx(toppx)-1;
+      clip(_offset_x, _offset_y, _scaling);
+    }
+  });
 }
