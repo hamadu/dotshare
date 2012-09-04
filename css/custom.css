@@ -18,8 +18,8 @@ div#screen_container {
 }
 
 div#dotcanvas_container {
-  position: absolute;
-  left: 48px;
+  position: relative;
+  height: 520px;
 }
 
 canvas#gridcanvas {
@@ -29,17 +29,27 @@ canvas#gridcanvas {
 }
 
 canvas#dotcanvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
+div#zoom_container {
+  text-align: right;
+}
+
+canvas#previewcanvas {
+  border: 1px dashed #000;
 }
 
 div#previewcanvas_container {
 }
 
-
 div#palette_container {
 }
 
 div#picker_container {
-  clear: both;
+  margin-top: 16px;
 }
 
 div.colorbox {
@@ -47,16 +57,21 @@ div.colorbox {
   width: 16px;
   height: 16px;
   margin: 4px;
-  border: 2px solid #000;
+  border: 3px solid #000;
 }
 
 div.colorbox.selected {
-  border: 2px dashed #000;
+  border: 3px double #000;
+}
+
+div.colorbox.selected.likeblack {
+  border: 3px double #fff;
 }
 
 div#current_color {
-  width: 16px;
-  height: 16px;
   margin: 4px;
-  border: 2px solid #000;
+}
+
+div.clearfix {
+  clear: both;
 }

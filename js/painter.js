@@ -9,6 +9,8 @@ window.onload = function() {
   setupPalette();
 
   setupPaintEvent();
+  
+  setupPicker();
 }
 
 var setupPalette = function() {
@@ -25,13 +27,23 @@ var setupPalette = function() {
   }
 }
 
+var isLikeBlack = function(r, g, b) {
+  return (r + g + b) / 3 <= 127;
+}
+
 var addPalette = function(r, g, b) {
   var palette = $("<div/>").addClass("colorbox").css("background-color", rgb(r, g, b));
+  if (isLikeBlack(r, g, b)) {
+    palette.addClass("likeblack");
+  }
+  
   $("#palette_container").append(palette);
   palette.click(function(){
     $(".colorbox").removeClass("selected");
     $(this).addClass("selected");
-    $("#current_color").css("background-color", $(".colorbox.selected").css("background-color"))
+    
+    var rgb = $(".colorbox.selected").css("background-color");
+    updatePicker(rgb);
   });
   
   return palette;
@@ -89,10 +101,35 @@ var setupPaintEvent = function() {
 
 var dot = function(x, y) {
   var currentColor = $(".colorbox.selected").css("background-color");
-  console.log(currentColor);
   var dotCanvas = $('#dotcanvas')[0];
   var ctx = dotCanvas.getContext('2d');
   ctx.beginPath();
   ctx.fillStyle = currentColor;
   ctx.fillRect(x * DOT_SIZE, y * DOT_SIZE, DOT_SIZE, DOT_SIZE);
+  
+  var previewCanvas = $('#previewcanvas')[0];
+  ctx = previewCanvas.getContext('2d');
+  ctx.beginPath();
+  ctx.fillStyle = currentColor;
+  ctx.fillRect(x, y, 1, 1);
+}
+
+var setupPicker = function() {
+  $('#current_color').colorpicker().on('changeColor', function(ev){
+    var rgb = ev.color.toRGB();
+    updateColor(rgb.r, rgb.g, rgb.b);
+  });
+}
+
+var updatePicker = function(rgb) {
+  $("#current_color i").css("background-color", rgb);
+  $("#current_color input").val(rgb);
+  $("#current_color").data("color", rgb);
+    
+  var picker = $("#current_color").data("colorpicker");
+  picker.update();
+}
+
+var updateColor = function(r, g, b) {
+  $(".colorbox.selected").css("background-color", rgb(r, g, b));
 }
