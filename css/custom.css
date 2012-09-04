@@ -45,6 +45,11 @@ canvas#previewcanvas {
 div#previewcanvas_container {
 }
 
+div#saveload_container {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
 div#palette_container {
 }
 

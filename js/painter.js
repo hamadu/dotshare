@@ -1,4 +1,5 @@
 var CANVAS_SIZE = 512;
+var PREVIEW_SIZE = 128;
 var _scaling = 32;
 var _is_drawing = false;
 
@@ -10,6 +11,8 @@ window.onload = function() {
   setupPaintEvent();
   
   setupPicker();
+  
+  setupFileLoader();
 }
 
 var setupPalette = function() {
@@ -23,6 +26,9 @@ var setupPalette = function() {
   }
   for (var r = 15 ; r <= 256 ; r += 16) {
     addPalette(0, 0, r);
+  }
+  for (var em = 0 ; em < 32 ; em++) {
+    addPalette(255, 255, 255);
   }
 }
 
@@ -180,4 +186,34 @@ var scaleUp = function() {
 
 var scaleDown = function() {
   setupScale(_scaling / 2);
+}
+
+
+var setupFileLoader = function() {
+  $("#files").change(loadDot);
+}
+
+var saveDot = function() {
+  var previewCanvas = $('#previewcanvas')[0];
+  var url = previewCanvas.toDataURL();
+  window.open(url);
+}
+
+var loadDot = function(e) {
+  var files = e.target.files;
+  if (files.length == 1) {
+    var reader = new FileReader;
+    reader.onload = function(event) {
+        var img = new Image;
+        img.onload = function() {
+          var previewCanvas = $('#previewcanvas')[0];
+          var previewCtx = previewCanvas.getContext('2d');
+          previewCtx.clearRect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
+          previewCtx.drawImage(img, 0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
+          setupScale(8);
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(files[0]);
+  }
 }

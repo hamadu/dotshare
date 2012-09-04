@@ -40,9 +40,16 @@
         </div>
       </div>
       <div class="span5">
+        
         <div id="previewcanvas_container">
-          <canvas id="previewcanvas" width="64" height="64">
+          <canvas id="previewcanvas" width="128" height="128">
           </canvas>
+        </div>
+       
+         <div id="saveload_container">
+           <div class="btn btn-small" onclick="saveDot()">save</div>
+           <div class="btn btn-small" onclick="$('input[id=files]').click();">load</div>
+           <input id="files" type="file" style="display:none">
         </div>
        
         <div id="palette_container">
@@ -52,7 +59,7 @@
         
         <div id="picker_container">
           <div class="input-append color" data-color="rgb(0, 0, 0)" data-color-format="rgb" id="current_color">
-          	<input type="text" class="span3" value="" readonly >
+          	<input type="text" class="span4" value="" readonly >
           	<span class="add-on"><i style="background-color: rgb(255, 146, 180)"></i></span>
           </div>
         </div>
@@ -64,5 +71,8 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-colorpicker.js"></script>
     <script src="js/painter.js"></script>
+    <script>
+      document.getElementById('files').addEventListener('change', loadDot, false);
+    </script>
 	</body>
 </html>
