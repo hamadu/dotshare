@@ -26,19 +26,21 @@ window.onload = function() {
 }
 
 var setupPalette = function() {
-  addPalette(0, 0, 0).addClass("selected");
-  addPalette(255, 255, 255);
-  for (var r = 15 ; r <= 256 ; r += 16) {
-    addPalette(r, 0, 0);
+  for (var r = 0 ; r <= 255 ; r += 51) {
+    for (var g = 0 ; g <= 255 ; g += 51) {
+      for (var b = 0 ; b <= 255 ; b += 51) {
+        if (r + g + b == 0) {
+          addPalette(r, g, b).addClass("selected");
+        } else {
+          addPalette(r, g, b);
+        }
+      }    
+    }
   }
-  for (var r = 15 ; r <= 256 ; r += 16) {
-    addPalette(0, r, 0);
-  }
-  for (var r = 15 ; r <= 256 ; r += 16) {
-    addPalette(0, 0, r);
-  }
-  for (var em = 0 ; em < 32 ; em++) {
-    addPalette(255, 255, 255);
+  for (var row = 0 ; row < 3 ; row++) {
+    for (var col = 0 ; col < 18 ; col++) {
+      addPalette(255, 255, 255);
+    }
   }
 }
 
