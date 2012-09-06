@@ -53,6 +53,10 @@ canvas#previewcanvas {
   border: 1px dashed #000;
 }
 
+div#backupcanvas_container canvas.current {
+  border: 2px dashed #000;
+}
+
 div#cliprect {
   position: absolute;
   left: 0px;

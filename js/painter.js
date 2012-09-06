@@ -19,6 +19,10 @@ window.onload = function() {
   setupFileLoader();
   
   setupToolbox();
+  
+  setupShortcuts();
+
+  backupCurrent();
 }
 
 var setupPalette = function() {
@@ -112,11 +116,15 @@ var setupPaintEvent = function() {
   });
 
   $('#gridcanvas').mouseup(function(e) {
-    drawEnd();
+    if (_is_drawing) {
+      drawEnd();
+    }
   });
 
   $('#gridcanvas').mouseout(function(e) {
-    drawEnd();
+    if (_is_drawing) {
+      drawEnd();
+    }
   });
 }
 
@@ -260,19 +268,23 @@ var setupToolbox = function() {
 
 var backupCurrent = function() {
   var currentCanvas = $("#previewcanvas")[0];
-  var backupCanvas = $("<canvas/>").addClass("backupcanvas").attr("width", PREVIEW_SIZE).attr("height", PREVIEW_SIZE)[0];
+  var backupCanvas = $("<canvas/>").addClass("backupcanvas current").attr("width", PREVIEW_SIZE).attr("height", PREVIEW_SIZE)[0];
   var backupCtx = backupCanvas.getContext('2d');
   backupCtx.drawImage(currentCanvas, 0, 0);
   
+  $("#backupcanvas_container canvas").removeClass("current");
   $("#backupcanvas_container").append(backupCanvas);
 }
 
-var restoreBackup = function() {
-  var lastBackupCanvas = $("canvas.backupcanvas :last")[0];
+var restoreWithCanvas = function(canvas) {
   var previewCanvas = $('#previewcanvas')[0];
   var previewCtx = previewCanvas.getContext('2d');
   previewCtx.clearRect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
-  previewCtx.drawImage(lastBackupCanvas, 0, 0);
+  previewCtx.drawImage(canvas, 0, 0);  
+}
+
+var restoreCurrentBackup = function() {
+  restoreWithCanvas($("canvas.backupcanvas.current")[0]);
 }
 
 var removeLastBackup = function() {
@@ -290,8 +302,6 @@ var drawStart = function(position) {
     return;
   }
   
-  backupCurrent();
-
   if (tool == "pencil") {
     dotCurrentColor(position[0], position[1]);
   } else if (tool == "bucket") {
@@ -307,13 +317,13 @@ var drawing = function(position) {
   if (tool == "pencil") {
     dotCurrentColor(position[0], position[1]);
   } else if (tool == "line") {
-    restoreBackup();
+    restoreCurrentBackup();
     drawLine(_offset_x + _draw_from[0], _offset_y + _draw_from[1], _offset_x + position[0], _offset_y + position[1]);
   } else if (tool == "rect") {
-    restoreBackup();
+    restoreCurrentBackup();
     drawRect(_offset_x + _draw_from[0], _offset_y + _draw_from[1], _offset_x + position[0], _offset_y + position[1]);    
   } else if (tool == "oval") {
-    restoreBackup();
+    restoreCurrentBackup();
     drawOval(_offset_x + _draw_from[0], _offset_y + _draw_from[1], _offset_x + position[0], _offset_y + position[1]);    
   }
 }
@@ -325,6 +335,9 @@ var drawEnd = function() {
   } else if (tool == "line") { 
   } else if (tool == "rect") { 
   }
+  
+  backupCurrent();
+  
   return _is_drawing;
 }
 
@@ -491,5 +504,29 @@ var drawSpoit = function(cx, cy) {
   var rgbarr = getRGBAFromDataArray(dataArray, cx, cy, PREVIEW_SIZE, PREVIEW_SIZE);
   
   addPalette(rgbarr[0], rgbarr[1], rgbarr[2]).click();
-  
+}
+
+var undo = function() {
+  var prevBackupCanvas = $("canvas.backupcanvas.current").prev()[0];
+  if (prevBackupCanvas) {
+    restoreWithCanvas(prevBackupCanvas);
+    $("canvas.backupcanvas").removeClass("current");
+    $(prevBackupCanvas).addClass("current");
+    clip(_offset_x, _offset_y, _scaling);
+  }
+}
+
+var redo = function() {
+  var nextBackupCanvas = $("canvas.backupcanvas.current").next()[0];
+  if (nextBackupCanvas) {
+    restoreWithCanvas(nextBackupCanvas);
+    $("canvas.backupcanvas").removeClass("current");
+    $(nextBackupCanvas).addClass("current");
+    clip(_offset_x, _offset_y, _scaling);
+  }
+}
+
+var setupShortcuts = function() {
+  $(document).bind('keydown', 'ctrl+z', undo);
+  $(document).bind('keydown', 'ctrl+y', redo);
 }
