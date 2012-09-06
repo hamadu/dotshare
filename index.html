@@ -38,13 +38,37 @@
           x<span id="zoom_rate">8</span>
           <div class="btn btn-small" onclick="scaleUp()">+</div>
         </div>
+        <div id="toolbox_container">
+          <div id="toolbox">
+            <div id="toolbox_mainmenu">
+              <a name="pencil" class="btn btn-small" href="#"><i class="icon-pencil"></i></a>
+              <a name="line" class="btn btn-small" href="#"><i class="icon-minus"></i></a>
+              <a name="rect" class="btn btn-small" href="#"><i class="icon-stop"></i></a>
+              <a name="oval" class="btn btn-small" href="#"><i class="icon-ok-circle"></i></a>
+              <a name="bucket" class="btn btn-small" href="#"><i class="icon-tint"></i></a>
+              <a name="spoit" class="btn btn-small" href="#"><i class="icon-filter"></i></a>
+            </div>
+          </div>
+        </div>
+        <div id="menubox_container">
+          <div id="menubox">
+            <a class="btn btn-small" href="#"><i class="icon-arrow-left"></i></a>
+            <a class="btn btn-small" href="#"><i class="icon-arrow-right"></i></a>
+            <a class="btn btn-small" href="#"><i class="icon-align-justify"></i></a>
+            <a class="btn btn-small btn-danger" href="#"><i class="icon-trash icon-white"></i></a>
+          </div>
+        </div>
       </div>
+      
       <div class="span5">
         <div id="previewcanvas_container">
           <canvas id="previewcanvas" width="128" height="128">
           </canvas>
           <div id="cliprect">
           </div>
+        </div>
+
+        <div id="backupcanvas_container">
         </div>
        
          <div id="saveload_container">
