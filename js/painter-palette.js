@@ -67,11 +67,16 @@ Painter.Palette = function(){
     select: function() {
       _currentPalette = this;
     },
-
-    changeColor: function(r, g, b) {
+    
+    setColor: function(r, g, b) {
       this.color.r = r;
       this.color.g = g;
       this.color.b = b;
+      $(this.element).css("background-color", Painter.Palette.ColorUtil.toRGBString(r, g, b));
+    },
+
+    changeColor: function(r, g, b) {
+      this.setColor(r, g, b);
       Painter.Canvas.getPreviewCanvas().remapColor(this);
       Painter.Canvas.clip();
     }
@@ -90,7 +95,7 @@ Painter.Palette = function(){
           }    
         }
       }
-      for (var row = 0 ; row < 3 ; row++) {
+      for (var row = 0 ; row < 8 ; row++) {
         for (var col = 0 ; col < 18 ; col++) {
           _add(255, 255, 255);
         }

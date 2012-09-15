@@ -86,6 +86,30 @@ Painter.Canvas = function(){
         }
       }
     },
+    
+    loadImage: function(image) {
+      this.context.drawImage(image, 0, 0);
+      var colors = Array(64*64*64);
+      var colorCount = 1;
+      var cnt = 0;
+      for (var i = 0 ; i < Math.min(this.height, image.height) ; i++) {
+        for (var j = 0 ; j < Math.min(this.width, image.width) ; j++) {
+          var arr = this.context.getImageData(j, i, 1, 1).data;
+          if (arr[3] == 0) {
+            this.data[i][j] = Painter.Palette.getPaletteList(0);
+          } else {
+            var rgb = 64 * 64 * Math.floor(arr[0] / 16) + 64 * Math.floor(arr[1] / 16) + Math.floor(arr[2] / 16);
+            if (!colors[rgb]) {
+              colors[rgb] = colorCount;
+              Painter.Palette.getPaletteList(colorCount).setColor(arr[0], arr[1], arr[2]);
+              colorCount++;
+            }
+            this.data[i][j] = Painter.Palette.getPaletteList(colors[rgb]);
+          }
+        }
+      };
+      
+    },
   
     drawLine: function(fx, fy, tx, ty, palette) {
       if (tx == fx) {
@@ -291,21 +315,6 @@ Painter.Canvas = function(){
       var currentColor = $(".colorbox.selected").css("background-color");
       this.dot(x, y, _offset_x, _offset_y, currentColor);
     },
-  
-    // clip: function(fx, fy, scaling) {
-    //   _mainCanvas.clearRect();
-    //   var lengthPerLine = Math.floor(_SIZE / scaling);
-    //   var dataArray = _previewCanvas.context.getImageData(fx, fy, lengthPerLine, lengthPerLine).data;
-    //   for (var i = 0 ; i < lengthPerLine ; i++) {
-    //     for (var j = 0 ; j < lengthPerLine ; j++) {
-    //       var r = dataArray[(i*lengthPerLine*4)+j*4];
-    //       var g = dataArray[(i*lengthPerLine*4)+j*4+1];
-    //       var b = dataArray[(i*lengthPerLine*4)+j*4+2];
-    //       var a = dataArray[(i*lengthPerLine*4)+j*4+3];
-    //       dot(j, i, fx, fy, Color.toRGBAString(r,g,b,a));
-    //     }
-    //   }
-    // },
     
     clip: function() {
       this.clipToMainCanvas(_offset_x, _offset_y, _scaling);

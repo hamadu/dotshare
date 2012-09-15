@@ -8,23 +8,25 @@ Painter.IO = function(){
           reader.onload = function(event) {
               var img = new Image;
               img.onload = function() {
-                var previewCanvas = $('#previewcanvas')[0];
-                var previewCtx = previewCanvas.getContext('2d');
-                previewCtx.clearRect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
-                previewCtx.drawImage(img, 0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
-                setupScale(8);
+                
+                var previewCanvas = Painter.Canvas.getPreviewCanvas();
+                previewCanvas.clearRect();
+                previewCanvas.loadImage(img);
+                Painter.Canvas.setScale(8);
+                Painter.Canvas.clip();
               };
               img.src = event.target.result;
           };
           reader.readAsDataURL(files[0]);
         }
       });
-    },
-
-    saveDot: function() {
-      var previewCanvas = $('#previewcanvas')[0];
-      var url = previewCanvas.toDataURL();
-      window.open(url);
+      
+      
+      $("#saveload_container div.save").click(function(e) {
+        var previewCanvas = $('#previewcanvas')[0];
+        var url = previewCanvas.toDataURL();
+        window.open(url);
+      });
     }
-  }
+  };
 }();
