@@ -59,7 +59,6 @@ Painter.Canvas = function(){
         }
       }
     }
-    // Canvas.list.push(this);
   };
   
   //
@@ -67,6 +66,10 @@ Painter.Canvas = function(){
   //
   PaintCanvas.prototype = {
     constructor: PaintCanvas,
+    
+    getColorPalette: function(x, y) {
+      return this.data[y][x];
+    },
   
     drawDot: function(x, y, palette) {
       this.drawRect(x, y, 1, 1, palette);
@@ -214,7 +217,6 @@ Painter.Canvas = function(){
       this.context.clearRect(0, 0, this.width, this.height);
     },
   
-  
     remapColor: function(palette) {
       for (var i = 0 ; i < this.height ; i++) {
         for (var j = 0 ; j < this.width ; j++) {
@@ -233,6 +235,10 @@ Painter.Canvas = function(){
   return {
     getScaling: function() {
       return _scaling;
+    },
+
+    getMainCanvas: function() {
+      return _mainCanvas;
     },
     
     getPreviewCanvas: function() {

@@ -16,6 +16,7 @@ Painter.Palette = function(){
     if (palette.color.isLikeBlack(r, g, b)) {
       paletteDiv.addClass("likeblack");
     }
+    palette.element = paletteDiv;
   
     $("#palette_container").append(paletteDiv);
     paletteDiv.click(function(){
@@ -55,20 +56,24 @@ Painter.Palette = function(){
     this.idx = _paletteList.length;
     this.color = new Color(color.r, color.g, color.b, color.a);
     this.options = options;
+
     _paletteList.push(this);
   };
   ColorPalette.prototype = {
     constructor: ColorPalette,
+    
+    colorConstructor: Color,
   
     select: function() {
       _currentPalette = this;
     },
 
     changeColor: function(r, g, b) {
-      this.color = new Color(color.r, color.g, color.b, 255);
-      for (var idx in Canvas.list) {
-        Canvas.list[idx].remapColor(this);
-      }
+      this.color.r = r;
+      this.color.g = g;
+      this.color.b = b;
+      Painter.Canvas.getPreviewCanvas().remapColor(this);
+      Painter.Canvas.clip();
     }
   };
   
@@ -143,6 +148,7 @@ Painter.Palette.Picker = function() {
 
     updateColor: function(r, g, b) {
       $(".colorbox.selected").css("background-color", Painter.Palette.ColorUtil.toRGBString(r, g, b));
+      Painter.Palette.getCurrentPalette().changeColor(r, g, b);
     }
   }
 }();

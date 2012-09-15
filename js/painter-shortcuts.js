@@ -12,12 +12,12 @@ Painter.Shortcuts = function(){
       });
     
       // zoom-in
-      $(document).bind('keydown', 'z', function(){
+      $(document).bind('keydown', 'x', function(){
         Painter.Canvas.scaleUp();
       });
 
       // zoom-out
-      $(document).bind('keydown', 'x', function(){
+      $(document).bind('keydown', 'z', function(){
         Painter.Canvas.scaleDown();
       });
     },    
